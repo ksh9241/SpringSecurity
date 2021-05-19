@@ -21,6 +21,6 @@ public class ApplicationConfig extends AbstractAnnotationConfigDispatcherServlet
 
 	@Override
 	protected String[] getServletMappings() { //DispatcherServlet이 매핑되기 위한 하나 혹은 여러개의 도메인을 지정한다.
-		return new String[] {"/"};
+		return new String[] {"/"}; 
 	}
 }
