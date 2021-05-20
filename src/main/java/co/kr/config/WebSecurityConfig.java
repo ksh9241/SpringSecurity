@@ -2,7 +2,7 @@ package co.kr.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
+import co.kr.config.security.AuthenticationProvider;
 import co.kr.config.security.CustomAccessDeniedHandler;
 import co.kr.config.security.CustomAuthenticationEntryPoint;
 import co.kr.config.security.CustomAuthenticationFailureHandler;
@@ -25,13 +26,15 @@ import co.kr.config.security.JwtAuthenticationFilter;
 import co.kr.config.security.JwtAuthorizationFilter;
 
 @EnableWebSecurity
+@Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{ //security-context 를 클래스화 함.
 	// 이 클래스는 SrpingSecurityFilterChain으로 알려진 어플리케이션 내 모든 보안 처리를 (어플리케이션 URL 보호, 제출한 사용자 이름과 비밀번호 검증, 로그인 폼으로 리다이렉트 등)
 	// 담당하는 서블릿 필터를 생성한다. 다음은 가장 기본적인 스프링 시큐리티 자바 설정의 예시다.
 //	public WebSecurityConfig() {
-//		System.out.println("WebSecurityConfig 들어옴//");
+//		System.out.println("WebSecurityConfig 들어옴");
 //	}
 	
+	@Autowired
 	private AuthenticationProvider authenticationProvider;
 	
 	public WebSecurityConfig(AuthenticationProvider authenticationProvider) {
