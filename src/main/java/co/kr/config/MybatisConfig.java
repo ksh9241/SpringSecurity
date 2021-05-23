@@ -21,6 +21,8 @@ public class MybatisConfig {
 		factory.setTypeAliasesPackage("co.kr.security.model"); // TypeAliases 클래스명으로 바꿔줌. (resultType, parameterType)
 		factory.setMapperLocations(new PathMatchingResourcePatternResolver()
 				.getResources("classpath:mapper/*.xml"));		// src/main/resources/mapper/모든명.xml을 읽음
+		
+		System.out.println("factory===="+factory);
 		return factory.getObject();
 	}
 }

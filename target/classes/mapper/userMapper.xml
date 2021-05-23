@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.kr.security.mapper.UserMapper">
+	<select id="selectUserList" resultType="co.kr.security.dto.UserDTO">
+		SELECT * FROM LOGINUSER
+	</select>
+	
+	<insert id="createUser" parameterType="co.kr.security.dto.UserDTO">
+		INSERT INTO LOGINUSER VALUES(LOGINUSER_SEQ.NEXTVAL,UPPER(#{username}),#{password})
+	</insert>
+	
+	<select id="findByUsername" resultType="co.kr.security.dto.UserDTO">
+		SELECT * FROM LOGINUSER
+		WHERE USERNAME = #{username}
+	</select>
+</mapper>

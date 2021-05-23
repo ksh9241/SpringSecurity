@@ -1,14 +1,11 @@
 package co.kr.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -16,7 +13,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
-import co.kr.config.security.AuthenticationProvider;
 import co.kr.config.security.CustomAccessDeniedHandler;
 import co.kr.config.security.CustomAuthenticationEntryPoint;
 import co.kr.config.security.CustomAuthenticationFailureHandler;
@@ -25,56 +21,55 @@ import co.kr.config.security.CustomLogoutSuccessHandler;
 import co.kr.config.security.JwtAuthenticationFilter;
 import co.kr.config.security.JwtAuthorizationFilter;
 
-@EnableWebSecurity
 @Configuration
+@EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{ //security-context 를 클래스화 함.
 	// 이 클래스는 SrpingSecurityFilterChain으로 알려진 어플리케이션 내 모든 보안 처리를 (어플리케이션 URL 보호, 제출한 사용자 이름과 비밀번호 검증, 로그인 폼으로 리다이렉트 등)
 	// 담당하는 서블릿 필터를 생성한다. 다음은 가장 기본적인 스프링 시큐리티 자바 설정의 예시다.
-//	public WebSecurityConfig() {
-//		System.out.println("WebSecurityConfig 들어옴");
+	
+
+	// 스프링 시큐리티가 사용자를 인증하는 방법이 담긴 객체
+//	@Override
+//	public void configure(AuthenticationManagerBuilder auth) throws Exception{
+//		// AuthenticationProvider 구현체
+//		auth.authenticationProvider(authenticationProvider);
+//		//auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
 //	}
 	
-	@Autowired
-	private AuthenticationProvider authenticationProvider;
-	
-	public WebSecurityConfig(AuthenticationProvider authenticationProvider) {
-		this.authenticationProvider = authenticationProvider;
-	}
-	
-	// 스프링 시큐리티가 사용자를 인증하는 방법이 담긴 객체
-	@Override
-	public void configure(AuthenticationManagerBuilder auth) throws Exception{
-		// AuthenticationProvider 구현체
-		auth.authenticationProvider(authenticationProvider);
-		//auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-	}
-	
 	// 스프링 시큐리티 룰을 무시하게 하는 URL (여기 추가된 URL은 시큐리티의 규칙에 적용되지않음)
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring()
-			.antMatchers("/resources/**")
-			;
-	}
+//	@Override
+//	public void configure(WebSecurity web) throws Exception {
+//		web.ignoring()
+//			.antMatchers("/resources/**")
+//			;
+//	}
 	
 	// 스프링 시큐리티 규칙 설정
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests() // 보호된 리소스 URI에 접근할 수 있는 권한을 설정
-			.antMatchers("/login*/**").permitAll() // 전체 접근 허용
-			.antMatchers("/logout/**").permitAll()
-			.antMatchers("/myPage").hasRole("ADMIN") //ADMIN이라는 ROLE(룰)을 가진 사용자만 접근 허용
-			.antMatchers("/chatbot/**").permitAll()
+			.antMatchers("/login").permitAll() // 전체 접근 허용
+			//.antMatchers("/logout/**").permitAll()
+			.antMatchers("/test").permitAll()
+			.antMatchers("/msg").permitAll()
+			.antMatchers("/admin").hasRole("ADMIN") //ADMIN이라는 ROLE(룰)을 가진 사용자만 접근 허용
+			.antMatchers("/welcome").hasRole("USER")
 			.anyRequest().authenticated().and().logout()
-				.logoutUrl("/logout")
-				.logoutSuccessHandler(logoutSuccessHandler())
+			.and()
+			.formLogin()
+				.loginPage("/login")
+			.and()
+				.logout()
+					.logoutSuccessUrl("/test")
+				//.logoutUrl("/logout")
+				//.logoutSuccessHandler(logoutSuccessHandler())
 				.and().csrf() // csrf(cross site request forgery)보안 설정을 비활성화
 					.disable() // 해당 기능을 사용하기 위해서는 프론트단에서 csrf토큰값 보내줘야함.
-				.addFilter(jwtAuthenticationFilter()) // Form Login에 사용되는 custom AuthenticationFilter 구현체를 등록
-				.addFilter(jwtAuthorizationFilter()) // Header 인증에 사용되는 BasicAuthenticationFilter 구현체를 등록
-				.exceptionHandling()
-					.accessDeniedHandler(accessDeniedHandler())
-					.authenticationEntryPoint(authenticationEntryPoint())
+				//.addFilter(jwtAuthenticationFilter()) // Form Login에 사용되는 custom AuthenticationFilter 구현체를 등록
+				//.addFilter(jwtAuthorizationFilter()) // Header 인증에 사용되는 BasicAuthenticationFilter 구현체를 등록
+				//.exceptionHandling()
+					//.accessDeniedHandler(accessDeniedHandler())
+					//.authenticationEntryPoint(authenticationEntryPoint())
 				;
 	}
 	/**
@@ -153,7 +148,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{ //security-
 	// 간단하게 비밀번호 암호화 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	}
 	
 	

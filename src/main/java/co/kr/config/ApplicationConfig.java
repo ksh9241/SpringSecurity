@@ -10,8 +10,8 @@ public class ApplicationConfig extends AbstractAnnotationConfigDispatcherServlet
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() { // 리턴된 클래스(DBConfig)들은 ContextLoaderListender가 생성한 애플리케이션 컨텍스트를 설정하는데 사용된다.
-		return new Class[] {DBConfig.class,WebSecurityConfig.class};	  // ContextLoaderListener : 애플리케이션 내의 그 외의 다른 빈을 로딩한다.
-		//return new Class[] {DBConfig.class,WebSecurityConfig.class};	// springSecurityFilterChain 은 RootContext에 등록되어야 한다.
+		//return new Class[] {DBConfig.class};	  // ContextLoaderListener : 애플리케이션 내의 그 외의 다른 빈을 로딩한다.
+		return new Class[] {DBConfig.class,WebSecurityConfig.class};	// springSecurityFilterChain 은 RootContext에 등록되어야 한다.
 	} 
 
 	@Override
