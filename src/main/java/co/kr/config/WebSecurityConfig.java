@@ -27,6 +27,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{ //security-
 	// 이 클래스는 SrpingSecurityFilterChain으로 알려진 어플리케이션 내 모든 보안 처리를 (어플리케이션 URL 보호, 제출한 사용자 이름과 비밀번호 검증, 로그인 폼으로 리다이렉트 등)
 	// 담당하는 서블릿 필터를 생성한다. 다음은 가장 기본적인 스프링 시큐리티 자바 설정의 예시다.
 	
+	/**
+	 * No qualifying bean of type 'org.springframework.security.config.annotation.ObjectPostProcessor<?>' available : 어노테이션 두개 다 있는데 왜 못찾는지 모르겠다.
+	 * */
+	
 
 	// 스프링 시큐리티가 사용자를 인증하는 방법이 담긴 객체
 //	@Override
